@@ -30,22 +30,37 @@ package at.htlleonding.fibonacci;
 public class Fibonacci {
 
     static int getNumberSingle(int n) {
-        if (n < 2)
+        if (n < 2){
             return 1;
-        else
+        }    
+        else{
             return getNumberSingle(n - 1) + getNumberSingle(n - 2);
+        }    
     }
 
-    static int getNumberParallel(int n) {
-        Thread t1 = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                
-            }
+    
+    
+   static int getNumberParallel(int n) {
+         if(n < 2){
+            return 1;     
+         }
+        
+        FibonacciRunnable f1 = new FibonacciRunnable(n-2);
+        Thread t1 = new Thread(f1);
+        t1.start();
+        
+        FibonacciRunnable f2 = new FibonacciRunnable(n-1);
+        Thread t2 = new Thread(f2);
+        t2.start();
+        
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
             
-        });
-        return 1;
+        }
+
+        return f1.res + f2.res;
     }
     
 }
